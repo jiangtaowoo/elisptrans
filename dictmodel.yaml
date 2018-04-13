@@ -1,0 +1,22 @@
+# -*- coding: utf-8 -*-
+EnglishDictModel:
+  tablename: endict
+  PK: ['word']
+  cols:
+    word: 1
+    wordem: 0
+    ph_am: 0
+    ph_en: 0
+    tags: 0
+    word_third: 0
+    word_done: 0
+    word_pl: 0
+    word_est: 0
+    word_ing: 0
+    word_er: 0
+    word_past: 0
+    mean: 1
+    sentence: 0
+    basicmean: 0
+    means: 0
+    enmeans: 0
