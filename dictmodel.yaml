@@ -4,6 +4,7 @@ EnglishDictModel:
   PK: ['word']
   cols:
     word: 1
+    vocabulary: 0
     wordem: 0
     ph_am: 0
     ph_en: 0
