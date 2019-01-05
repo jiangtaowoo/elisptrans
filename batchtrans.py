@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 from sys import argv
+import re
 import json
 import copy
 import lxml.html
@@ -57,7 +58,7 @@ class WordTranslateResult(object):
     #vocabulary结果
     def parse_vocabulary_result_from_rsp(self, rsp):
         def flashcard_format(s):
-            return s.replace('\n',' ').replace('\t',' ')
+            return s.replace('\n','<br>').replace('\t',' ')
         def _stringify_node(node):
             parts = ([x for x in node.itertext()])
             return flashcard_format(''.join(filter(None, parts)).strip())
@@ -66,7 +67,7 @@ class WordTranslateResult(object):
             main_divs = html.xpath("//div[@class='section blurb']")
             v = []
             if main_divs:
-                v.append(u"<hr><div>{0}</div>".format(_stringify_node(main_divs[0])))
+                v.append(u"<div>{0}</div>".format(_stringify_node(main_divs[0])))
             definiction_divs = html.xpath("//div[@class='main']/div[@class='definitions']/div")
             if definiction_divs:
                 v.append(u"<div>{0}</div>".format(_stringify_node(definiction_divs[0])))
@@ -289,7 +290,10 @@ class WordTranslateResult(object):
         if self.vocabulary:
             if not isinstance(self.vocabulary, unicode):
                 self.vocabulary = unicode(self.vocabulary, "utf-8")
-            back.append(self.vocabulary.replace('\r',' ').replace('\n',' ').replace('\t', ' ').replace(self.word, '<b>'+self.word+'</b>')+'<hr>')
+            vocab_v = re.sub(r'(<br>\s*)+', '<br>', self.vocabulary)
+            if '</div> <div>' in vocab_v:
+                vocab_v = vocab_v[:vocab_v.index('</div> <div>')+6]
+            back.append('<hr>' + vocab_v.replace('\r',' ').replace('\n',' ').replace('\t', ' ').replace(self.word, '<b>'+self.word+'</b>') + '<hr>')
         #第四行, 基本词义, 含词性 basicmean, 每条解释占一行
         if self.basicmean:
             for bmean in self.basicmean:
@@ -399,6 +403,8 @@ class BDTranslation(object):
                 req_dict0['params'] = {"search": word, "lang": "en"}
                 rsp0 = sess.get(**req_dict0)
                 res0 = word_obj.parse_vocabulary_result_from_rsp(rsp0)
+                if not res0:
+                    return None
                 #fanyi.baidu
                 req_dict['url'] = urlapi
                 req_dict['data'] = BDTranslation._gen_payload(word, js_dict, srclang)
@@ -423,7 +429,7 @@ class BDTranslation(object):
                 result = BDTranslation._translate_request(**params)
                 if not result:
                     print('****** Worker {0} failed on line {1}: {2} ...'.format(workerid, line, word))
-                    gevent.sleep(0)
+                    gevent.sleep(5)
                 else:
                     print('Woker {0} is traslate line {1} successful: {2}...'.format(workerid, line, word))
             else:
@@ -503,9 +509,9 @@ class BDTranslation(object):
             outfilename = '{0:%Y-%m-%d}_en_flashcard.txt'.format(datetime.datetime.today())
             with open(outfilename, 'w') as outf:
                 for line, word, card in flash_card:
-                    print(line,word)
                     outf.write(card.encode('utf-8'))
                     outf.write('\n')
+                print(line)
 
 if __name__=="__main__":
     if len(argv)==2:
