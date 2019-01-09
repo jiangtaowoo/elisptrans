@@ -28,7 +28,7 @@ class WordTranslateResult(object):
         'word_third', 'word_done', 'word_pl', 'word_est', 'word_ing',
         'word_er', 'word_past', 'mean', 'sentence', 'basicmean', 'means', 'enmeans', 'vocabulary'
     ]
-    __iterable_attrs__ = ['basicmean', 'means', 'enmeans']
+    __iterable_attrs__ = ['basicmean', 'means', 'enmeans', 'vocabulary']
     __exchange_attrs__ = {'word_third': u'第三人称单数', 'word_done': u'过去分词',
                         'word_pl': u'复数', 'word_est': u'EST',
                         'word_ing': u'现在分词', 'word_er': u'ER',
@@ -76,7 +76,7 @@ class WordTranslateResult(object):
                 self.vocabulary['definition'] = u"<div>{0}</div>".format(_stringify_node(definition_divs[0]))
             audio_divs = html.xpath("//a[@class='audio']/@data-audio")
             if audio_divs:
-                self.vocabulary['audio'] = u"https://audio.vocab.com/1.0/us/{0}".format(audio_divs[0])
+                self.vocabulary['audio'] = u"https://audio.vocab.com/1.0/us/{0}.mp3".format(audio_divs[0])
             return True
         else:
             return None
@@ -306,7 +306,9 @@ class WordTranslateResult(object):
         #第四行, vocabulary
         if self.vocabulary:
             if 'audio' in self.vocabulary:
-                back.append('[sound:{0}]'.format(self.vocabulary['audio']) + '<hr>')
+                audio_v = "[sound: {0}]".format(self.vocabulary['audio']) 
+                back.append(audio_v + ' <hr>')
+                res_dict['audio'] = audio_v
             k = None
             if 'main' in self.vocabulary:
                 k = 'main'
@@ -478,7 +480,7 @@ class BDTranslation(object):
             return result
         else:
             BDTranslation._output_translate_result('{0} fail ...'.format(word))
-            return None
+            return {}
 
     """
     multiple words translation, use sqlite & text file
