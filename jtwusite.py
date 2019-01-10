@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import transapi
 import json
-from flask import Flask, render_template
+from flask import Flask, jsonify
 app = Flask(__name__)
 trans_obj = transapi.BDTranslation()
 
@@ -10,9 +10,9 @@ def process_trans(word):
     try:
         res = trans_obj.single_translate(word)
         res['result'] = 'success'
-        return json.dumps(res)
+        return jsonify(res)
     except:
-        return json.dumps({'result':'fail'}) 
+        return jsonify({'result':'fail'}) 
 
 if __name__ == '__main__':
    app.run(host='0.0.0.0', port=8080)

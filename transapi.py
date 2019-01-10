@@ -15,7 +15,7 @@ import ormadaptor
 
 
 def trans_log(logmsg):
-    logfilename = 'trans_{0:%Y-%m-%d}.log'.format(datetime.datetime.today())
+    logfilename = os.sep.join(['.','log','trans_{0:%Y-%m-%d}.log'.format(datetime.datetime.today())])
     with open(logfilename, 'a+') as outf:
         outf.write('{0}:\t{1}\n'.format(datetime.datetime.now(),logmsg))
 
@@ -306,9 +306,9 @@ class WordTranslateResult(object):
         #第四行, vocabulary
         if self.vocabulary:
             if 'audio' in self.vocabulary:
-                audio_v = "[sound: {0}]".format(self.vocabulary['audio']) 
-                back.append(audio_v + ' <hr>')
-                res_dict['audio'] = audio_v
+                #audio_v = "[sound: {0}]".format(self.vocabulary['audio']) 
+                #back.append(audio_v + ' <hr>')
+                res_dict['audio'] = self.vocabulary['audio']
             k = None
             if 'main' in self.vocabulary:
                 k = 'main'
