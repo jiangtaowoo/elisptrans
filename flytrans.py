@@ -298,8 +298,8 @@ class BDTranslation(object):
     def _init_request(sess, req_dict, js_dict):
         cookie_dict = {'locale': 'zh', 'BAIDUID': '84714D78F6D00E5CF202E62D0D643143:FG=1'}
         sess.cookies = requests.utils.cookiejar_from_dict(cookie_dict)
-        url = 'http://fanyi.baidu.com'
-        headers = {'Host': 'fanyi.baidu.com', 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/63.0.3239.84 Chrome/63.0.3239.84 Safari/537.36', 'Accept': '*/*', 'Accept-Encoding': 'gzip, deflate', 'Accept-Language': 'zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2', 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8','Connection': 'keep-alive', 'Referer': 'http://fanyi.baidu.com/', 'X-Requested-With': 'XMLHttpRequest'}
+        url = 'https://fanyi.baidu.com'
+        headers = {'Host': 'fanyi.baidu.com', 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/63.0.3239.84 Chrome/63.0.3239.84 Safari/537.36', 'Accept': '*/*', 'Accept-Encoding': 'gzip, deflate', 'Accept-Language': 'zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2', 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8','Connection': 'keep-alive', 'Referer': 'https://fanyi.baidu.com/', 'X-Requested-With': 'XMLHttpRequest'}
         req_dict['url'] = url
         req_dict['headers'] = headers
         try:
@@ -348,7 +348,7 @@ class BDTranslation(object):
         word_obj.sentence = sentence.replace('\r',' ').replace('\n',' ')
         word_in_dict = word_obj.read_result_from_db(word)
         if not word_in_dict:
-            urlapi = 'http://fanyi.baidu.com/v2transapi'
+            urlapi = 'https://fanyi.baidu.com/v2transapi'
             #step 1. first visit, to get gtk, token
             if not BDTranslation._init_request(sess, req_dict, js_dict):
                 return None
